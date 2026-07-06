@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelPrompt | Professional AI Security Prompt Builder</title>
+  <meta name="description" content="Generate high-fidelity, production-grade prompts for AI models across cybersecurity workflows including pentesting, malware analysis, secure coding, and threat hunting.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230d1117%22/><path d=%22M30 45 L50 25 L70 45 L55 45 L55 75 L45 75 L45 45 Z%22 fill=%22%2300ffaa%22/></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <h1>SentinelPrompt <span class="badge">v1.0</span></h1>
+      </div>
+      <p class="header-tagline">Open-Source AI Security Prompt Builder</p>
+      <div class="header-actions">
+        <button id="kb-toggle" class="btn btn-ghost" aria-label="Toggle Knowledge Base">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Guide</span>
+        </button>
+        <button id="theme-toggle" class="btn btn-ghost" aria-label="Toggle light/dark theme">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" aria-label="GitHub Repository">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      
+      <!-- Panel 1: Sidebar (Search & Browse) -->
+      <section class="panel sidebar-panel" id="panel-sidebar" aria-label="Template Library">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search templates, tags..." autocomplete="off">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+
+        <div class="filter-group">
+          <label for="difficulty-filter" class="sr-only">Difficulty</label>
+          <select id="difficulty-filter">
+            <option value="">All Difficulties</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+            <option value="Expert">Expert</option>
+          </select>
+          
+          <div class="tab-filters">
+            <button id="tab-all" class="tab-btn active">All</button>
+            <button id="tab-favs" class="tab-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Favs</span>
+            </button>
+            <button id="tab-recents" class="tab-btn">History</button>
+          </div>
+        </div>
+
+        <div class="categories-nav">
+          <div class="section-title">Categories</div>
+          <div class="category-list" id="category-buttons">
+            <!-- Dynamically populated categories -->
+          </div>
+        </div>
+
+        <div class="template-list-wrapper">
+          <div class="section-title" id="list-header">Templates</div>
+          <div class="template-list" id="templates-container">
+            <!-- Dynamically populated templates -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 2: Form Builder -->
+      <section class="panel form-panel" id="panel-form" aria-label="Prompt Customizer">
+        <div class="panel-header-sticky">
+          <div class="template-title-area">
+            <div class="template-badge-row">
+              <span id="active-category-badge" class="badge-cat">Pentesting</span>
+              <span id="active-difficulty-badge" class="badge-diff">Advanced</span>
+            </div>
+            <h2 id="active-template-title">SSRF Vulnerability Audit</h2>
+            <p id="active-template-desc" class="template-desc">Create a tailored penetration testing plan focused on Server-Side Request Forgery (SSRF).</p>
+          </div>
+          <button id="fav-toggle" class="btn btn-icon btn-fav" aria-label="Favorite this template">
+            <svg class="star-outline" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+        </div>
+
+        <form id="prompt-form" class="prompt-form-fields" onsubmit="return false;">
+          <!-- Dynamically populated form fields -->
+        </form>
+      </section>
+
+      <!-- Panel 3: Live Preview & Optimizer -->
+      <section class="panel preview-panel" id="panel-preview" aria-label="Compiled Output">
+        <div class="panel-header-sticky">
+          <div class="tabs-nav">
+            <button id="preview-tab-compiled" class="tab-btn active">Compiled Prompt</button>
+            <button id="preview-tab-markdown" class="tab-btn">HTML Preview</button>
+            <button id="preview-tab-optimizer" class="tab-btn">
+              Optimizer
+              <span id="optimizer-count-badge" class="badge-opt">0</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-contents">
+          <!-- Compiled Prompt View (Raw Text / Markdown Source) -->
+          <div id="content-compiled" class="tab-content-pane active">
+            <div class="textarea-wrapper">
+              <textarea id="raw-prompt-output" readonly aria-label="Generated Prompt Output"></textarea>
+            </div>
+          </div>
+
+          <!-- HTML Rendered Preview -->
+          <div id="content-markdown" class="tab-content-pane">
+            <div id="rendered-markdown-output" class="markdown-body">
+              <!-- Rendered markdown preview -->
+            </div>
+          </div>
+
+          <!-- Heuristic Optimizer View -->
+          <div id="content-optimizer" class="tab-content-pane">
+            <div class="optimizer-score-box">
+              <div class="score-radial">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle" id="score-circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <text x="18" y="20.35" class="percentage" id="score-text">100%</text>
+                </svg>
+              </div>
+              <div class="score-details">
+                <h3>Prompt Quality Score</h3>
+                <p>Based on detail, constraints, technology specs, and size.</p>
+                <div class="metrics-row">
+                  <div>Complexity: <strong id="metric-complexity">Low</strong></div>
+                  <div>Words: <strong id="metric-words">0</strong></div>
+                  <div>Chars: <strong id="metric-chars">0</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="optimizer-suggestions-section">
+              <h4>Improvement Suggestions</h4>
+              <ul class="suggestions-list" id="suggestions-container">
+                <!-- Suggestions will be generated here -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-footer">
+          <button id="btn-copy" class="btn btn-primary" aria-label="Copy prompt to clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy Prompt</span>
+          </button>
+          
+          <div class="dropdown">
+            <button id="btn-download-trigger" class="btn btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download</span>
+            </button>
+            <div class="dropdown-content">
+              <button id="btn-download-md">Markdown (.md)</button>
+              <button id="btn-download-txt">Plain Text (.txt)</button>
+            </div>
+          </div>
+
+          <button id="btn-share" class="btn btn-secondary" aria-label="Copy shareable URL link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>Share URL</span>
+          </button>
+
+          <div class="dropdown">
+            <button id="btn-config-trigger" class="btn btn-secondary" aria-label="Config management">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <div class="dropdown-content dropdown-content-right">
+              <button id="btn-export-json">Export Config (JSON)</button>
+              <button id="btn-import-json">Import Config (JSON)</button>
+              <input type="file" id="import-json-file" accept=".json" style="display: none;">
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Side Drawer: Knowledge Base / Guidance Guide -->
+    <div id="kb-drawer" class="drawer">
+      <div class="drawer-overlay"></div>
+      <div class="drawer-content">
+        <div class="drawer-header">
+          <h2>AI Security Prompting Guide</h2>
+          <button id="kb-close" class="btn btn-icon" aria-label="Close Guide">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="drawer-body">
+          <!-- Dynamically populated from main.ts / markdown -->
+          <section class="kb-section">
+            <h3>Prompt Engineering Best Practices</h3>
+            <ul>
+              <li><strong>Be Explicit:</strong> State the exact system role (e.g., "Principal Application Security Engineer").</li>
+              <li><strong>Define Boundaries:</strong> Provide negative constraints (e.g., "Do not test third-party endpoints").</li>
+              <li><strong>Enforce Schema:</strong> Request output in standardized structure (e.g., Markdown table, JSON schema, Sigma format).</li>
+              <li><strong>Supply Reference Snippets:</strong> Include source log files or exact code targets for higher precision.</li>
+            </ul>
+          </section>
+          
+          <section class="kb-section">
+            <h3>AI Security & Model Risks</h3>
+            <ul>
+              <li><strong>Prompt Injection:</strong> Occurs when untrusted data alters the model's intended instructions. Protect endpoints using delimiters (e.g., wrapping inputs in XML tags).</li>
+              <li><strong>Data Confidentiality:</strong> Do not supply production API keys, production PII, or raw secret code to public commercial LLMs.</li>
+              <li><strong>Hallucinations:</strong> LLMs generate plausible-sounding but false security findings. Always manually verify generated proof-of-concept scripts before execution.</li>
+            </ul>
+          </section>
+          
+          <section class="kb-section">
+            <h3>Key Shortcuts</h3>
+            <div class="kbd-list">
+              <div class="kbd-item"><kbd>Ctrl</kbd> + <kbd>/</kbd> <span>Focus search input</span></div>
+              <div class="kbd-item"><kbd>Ctrl</kbd> + <kbd>C</kbd> <span>Copy compiled prompt</span></div>
+              <div class="kbd-item"><kbd>Ctrl</kbd> + <kbd>S</kbd> <span>Share URL</span></div>
+              <div class="kbd-item"><kbd>Esc</kbd> <span>Close guide drawer</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Tab Switcher -->
+    <nav class="mobile-panel-nav" aria-label="Mobile Navigation">
+      <button id="mobile-btn-sidebar" class="mobile-nav-btn active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <span>Library</span>
+      </button>
+      <button id="mobile-btn-form" class="mobile-nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>Customize</span>
+      </button>
+      <button id="mobile-btn-preview" class="mobile-nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Preview</span>
+      </button>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" class="toast-container"></div>
+
+  </div>
+
+  <!-- Main script -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
