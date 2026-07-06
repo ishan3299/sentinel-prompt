@@ -1,0 +1,21 @@
+{
+  "name": "SentinelPrompt AI Security Builder",
+  "short_name": "SentinelPrompt",
+  "description": "Generate professional security prompt templates for AI models.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080b10",
+  "theme_color": "#00ffaa",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 width=%22192%22 height=%22192%22><rect width=%22192%22 height=%22192%22 rx=%2240%22 fill=%22%23080b10%22/><path d=%22M60 90 L100 50 L140 90 L115 90 L115 150 L85 150 L85 90 Z%22 fill=%22%2300ffaa%22/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 width=%22512%22 height=%22512%22><rect width=%22512%22 height=%22512%22 rx=%22100%22 fill=%22%23080b10%22/><path d=%22M160 240 L256 144 L352 240 L292 240 L292 400 L220 400 L220 240 Z%22 fill=%22%2300ffaa%22/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
