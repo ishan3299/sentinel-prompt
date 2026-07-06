@@ -1115,3 +1115,119 @@ html.light .moon-icon { display: block; }
     width: 100%;
   }
 }
+
+/* ==========================================
+   13. PREMIUM UI & MICRO-INTERACTIONS
+   ========================================== */
+
+/* Blueprint Backdrop Gridmesh */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.light body::before {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+}
+
+/* Header model select dropdown */
+.header-model-select {
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.select-model {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.select-model:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.select-model option {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+}
+
+/* Aceternity Card Hover Glow */
+.template-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.template-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    140px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(var(--accent-rgb), 0.12),
+    transparent 65%
+  );
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.template-card:hover::before {
+  opacity: 1;
+}
+
+.template-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Copy button success animation state */
+.btn-primary.copied {
+  background-color: #22c55e !important;
+  color: white !important;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Smooth Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+

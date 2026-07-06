@@ -537,5 +537,450 @@ You are an AI Architect and Security Researcher specializing in Agentic Security
 4. **Defensive Architectures**: Provide standard, secure wrappers for the tools (e.g., command parameterization, input sanitizers, read-only connections, human-in-the-loop triggers).
 
 Provide a technical assessment report in the style of {{outputFormat}}.`
+  },
+
+  // 10. CLOUD SECURITY (S3 PUBLIC BUCKET)
+  {
+    id: 'cloud-s3-leak',
+    title: 'S3 Public Access Policy Auditor',
+    description: 'Evaluate AWS S3 bucket ACLs and bucket policies to detect public read/write exposure or write privilege vulnerabilities.',
+    category: 'pentest',
+    subcategory: 'Cloud Security',
+    difficulty: 'Intermediate',
+    tags: ['AWS', 'S3', 'Cloud Leak', 'Policy Check'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 's3BucketPolicy',
+        label: 'Bucket Policy JSON (Optional)',
+        type: 'textarea',
+        placeholder: 'Paste the S3 Bucket Policy JSON here...',
+        helpText: 'Auditor will trace statement blocks for public principal wildcards (*).'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are an AWS Security Consultant. Review the S3 bucket configuration to evaluate public exposures, data leakage paths, or insecure modification configurations.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Bucket Policy Reference**: {{s3BucketPolicy}}
+- **Tools Permitted**: {{requiredTools}}
+- **Output Style**: {{outputFormat}}
+
+### Analysis requirements
+1. **exposure Assessment**: Locate any permissions granting "Principal": "*" or anonymous read/write actions (e.g., s3:GetObject, s3:PutObject) without specific IpAddress or PrincipalOrgID conditions.
+2. **CLI verification**: Write the exact \`aws s3api\` CLI commands to run using {{requiredTools}} to inspect policy, ACL, and BlockPublicAccess settings.
+3. **Bypass Checks**: Outline checks to verify if Bucket ACL overrides public block configuration settings.
+4. **Mitigation**: Provide the corrected bucket policy JSON document and cli hardening commands.
+
+Deliver the audit findings in {{outputFormat}}.`
+  },
+
+  // 11. ACTIVE DIRECTORY (KERBEROASTING)
+  {
+    id: 'ad-kerberoasting',
+    title: 'Active Directory Kerberoasting Plan',
+    description: 'Design a detailed pen-testing workflow to perform Kerberoasting attacks to extract and crack Service Principal Name (SPN) tickets.',
+    category: 'pentest',
+    subcategory: 'Active Directory',
+    difficulty: 'Advanced',
+    tags: ['Active Directory', 'Kerberoasting', 'SPN', 'Mimikatz', 'Hashcat'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'targetDomain',
+        label: 'AD Domain Controller Name',
+        type: 'text',
+        placeholder: 'corp.internal, 10.10.10.50...',
+        required: true,
+        helpText: 'The target domain name or DC IP.'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are an Active Directory Penetration Testing specialist. Formulate a step-by-step adversary emulation and pentest playbook targeting SPNs in the domain controller.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Target Domain Controller**: {{targetDomain}}
+- **Tools**: {{requiredTools}}
+- **Output Format**: {{outputFormat}}
+
+### Playbook sections
+1. **SPN Enumeration**: Write specific PowerShell/CLI Commands to discover SPN accounts associated with user accounts (e.g., using Setspn, PowerView, or Rubeus).
+2. **Ticket Requesting**: Provide instructions and command strings using {{requiredTools}} to request Kerberos TGS tickets for SPNs and extract them to disk (e.g., Rubeus /kerberoast).
+3. **Offline Cracking**: Provide the exact \`hashcat\` or \`john\` commands to crack the extracted Kerberos ticket hashes using custom rules and dictionaries.
+4. **Detection Mapping**: Suggest Event IDs (e.g., Event ID 4769 - A Kerberos service ticket was requested) to monitor to detect Kerberoasting activity.
+
+Format output as {{outputFormat}}.`
+  },
+
+  // 12. KUBERNETES SEC (NAMESPACE ISOLATION)
+  {
+    id: 'k8s-namespaces',
+    title: 'Kubernetes Namespace Isolation Audit',
+    description: 'Audit network policies and RBAC roles in a Kubernetes cluster to verify Namespace isolation controls.',
+    category: 'pentest',
+    subcategory: 'Kubernetes',
+    difficulty: 'Advanced',
+    tags: ['Kubernetes', 'Namespace', 'RBAC', 'NetworkPolicy'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'rbacDefinition',
+        label: 'Role / ClusterRole YAML (Optional)',
+        type: 'textarea',
+        placeholder: 'Paste Role, ClusterRole, or NetworkPolicy YAML here...',
+        helpText: 'K8s security specialist will review configuration rules.'
+      },
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are a Kubernetes Security Architect and Cluster Auditor. Assess namespace boundaries, service account roles, and inter-namespace network configurations to detect boundary escapes.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **K8s Config / Context**: {{rbacDefinition}}
+- **Output Format**: {{outputFormat}}
+
+### Audit Steps
+1. **NetworkPolicy Analysis**: Verify if egress/ingress blocks are missing in default-deny configurations, allowing cross-namespace pod communication.
+2. **RBAC Rule auditing**: If YAML configuration was supplied ({{rbacDefinition}}), look for wildcard verbs or dangerous resources (e.g., secrets, pods/exec, daemonsets).
+3. **Pod escape commands**: Write commands (using \`kubectl\`) to test namespace privileges and attempt privilege escalations.
+4. **Hardening**: Provide the correct YAML configurations for securing NetworkPolicies and Least-Privileged ServiceAccounts.
+
+Deliver report in style: {{outputFormat}}.`
+  },
+
+  // 13. MOBILE SEC (FRIDA HOOKING)
+  {
+    id: 'mob-frida',
+    title: 'Mobile App Frida Instrumentation Hooks',
+    description: 'Design Frida hook scripts to bypass SSL pinning, root detection, or examine API calls in Android/iOS apps.',
+    category: 'pentest',
+    subcategory: 'Mobile Security',
+    difficulty: 'Expert',
+    tags: ['Mobile Sec', 'Android', 'Frida', 'SSL Pinning', 'Bypass'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'targetClassMethod',
+        label: 'Target Class / Method to Hook',
+        type: 'text',
+        placeholder: 'com.target.app.SecurityCheck.isRooted()',
+        required: true,
+        helpText: 'Java class path or Native function name to target.'
+      },
+      {
+        id: 'mobilePlatform',
+        label: 'Target OS Platform',
+        type: 'select',
+        defaultValue: 'Android (Java Runtime)',
+        options: ['Android (Java Runtime)', 'iOS (Objective-C Runtime)', 'Native (C/C++ Shared Library Hooking)'],
+        helpText: 'Select mobile target system.'
+      },
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are a Mobile Security Analyst and instrumentation specialist. Write custom Frida scripts to hook and intercept the target classes and bypass built-in security checks.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Target OS**: {{mobilePlatform}}
+- **Method/Class Target**: {{targetClassMethod}}
+- **Output Style**: {{outputFormat}}
+
+### Hook Design
+1. **Instrumentation Logic**: Analyze how {{mobilePlatform}} executes the targeted call, and draft a Frida Javascript template to intercept it.
+2. **Hook script Code**: Write complete, working Javascript Frida code using \`Java.perform\` or \`Interceptor.attach\` to override the return value of {{targetClassMethod}} to force bypass states.
+3. **Execution command**: Provide the Frida shell CLI commands to inject this script into the target package process.
+
+Deliver the complete code and instructions formatted in {{outputFormat}}.`
+  },
+
+  // 14. REVERSE ENGINEERING (SHELLCODE)
+  {
+    id: 'reverse-shellcode',
+    title: 'x64 Shellcode Assembly Deconstruction',
+    description: 'Deconstruct compiled shellcode hex/assembly buffers to identify API calls, socket links, or encryption keys.',
+    category: 'defense',
+    subcategory: 'Reverse Engineering',
+    difficulty: 'Expert',
+    tags: ['Reverse Engineering', 'x64 Assembly', 'Shellcode', 'Opcode'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'shellcodeHex',
+        label: 'Raw Shellcode Hex Buffer',
+        type: 'textarea',
+        placeholder: 'e.g., \\x48\\x31\\xc0\\x48\\x31\\xff\\x48\\x31\\xf6...',
+        required: true,
+        helpText: 'Input shellcode byte array.'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are an expert Security Researcher and Assembly deconstructor. Analyze the provided compiled shellcode hex payload to identify registers, system calls, endpoints, and shellcode logic.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Raw shellcode**:
+\`\`\`
+{{shellcodeHex}}
+\`\`\`
+- **Tools Permitted**: {{requiredTools}}
+- **Output Style**: {{outputFormat}}
+
+### Analysis requirements
+1. **Assembly Translation**: Disassemble the raw hex shellcode ({{shellcodeHex}}) and explain the assembly instructions line-by-line.
+2. **API resolution**: Identify how the shellcode locates the base address of Kernel32.dll/NTDLL.dll or resolves API function calls (e.g., API hashing algorithms, PEB traversal).
+3. **C2 network beacons**: Locate any hardcoded ports, IP addresses, or payload URLs.
+4. **Debugging walkthrough**: Detail how to load and step through this shellcode in a debugger using {{requiredTools}}.
+
+Provide disassembled analysis in {{outputFormat}}.`
+  },
+
+  // 15. LOG ANALYSIS (PCAP AUDIT)
+  {
+    id: 'dfir-wireshark',
+    title: 'PCAP Traffic / Wireshark Network Audit',
+    description: 'Analyze network trace PCAP files, tcpdump buffers, or Wireshark streams to track lateral movement or data exfiltration.',
+    category: 'defense',
+    subcategory: 'Log Analysis',
+    difficulty: 'Intermediate',
+    tags: ['PCAP', 'Wireshark', 'Network Audit', 'Log Analysis'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'pcapDetails',
+        label: 'Observed Network Traffic / Protocol Details',
+        type: 'textarea',
+        placeholder: 'Describe ports, HTTP requests, DNS queries, or anomalous packet sizes...',
+        required: true,
+        helpText: 'Detail observed anomalies in traffic.'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are a Network Forensics Specialist and DFIR Analyst. Analyze network packet details to construct an attack timeline, identify communication paths, and detect exfiltrations.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Traffic Anomalies**: {{pcapDetails}}
+- **Tools**: {{requiredTools}}
+- **Output format**: {{outputFormat}}
+
+### Analysis Steps
+1. **Protocol Auditing**: Analyze the protocol interactions described ({{pcapDetails}}). Identify potential covert channels, DNS tunneling, HTTP beaconing, or SMTP data exfiltrations.
+2. **Wireshark Display Filters**: Generate precise Wireshark display filter strings to search the raw PCAP file using {{requiredTools}} for this exact malicious behavior.
+3. **CLI Extraction Command**: Write the exact \`tshark\` command line commands to extract these packet fields programmatically.
+4. **Indicators**: List the source/destination IPs, ports, payload sizes, and signatures detected.
+
+Deliver analysis in the format of {{outputFormat}}.`
+  },
+
+  // 16. THREAT INTEL (CTI REPORTING)
+  {
+    id: 'intel-threat',
+    title: 'MITRE ATT&CK Threat Actor Mapping',
+    description: 'Compile Threat Intelligence reports on threat groups (APTs) and map their tactics, techniques, and procedures (TTPs) to the MITRE ATT&CK framework.',
+    category: 'defense',
+    subcategory: 'Threat Intelligence',
+    difficulty: 'Intermediate',
+    tags: ['Threat Intel', 'APT', 'MITRE ATT&CK', 'TTPs'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'aptGroup',
+        label: 'Threat Actor Name / Details',
+        type: 'text',
+        placeholder: 'APT29 (Cozy Bear), Lazarus Group, Volt Typhoon...',
+        required: true,
+        helpText: 'Specify target threat group to map.'
+      },
+      {
+        id: 'observedTtp',
+        label: 'Observed Behavior Summary (Optional)',
+        type: 'textarea',
+        placeholder: 'Describe observed actions, payloads used, credentials accessed...',
+        helpText: 'Context to map custom behaviors.'
+      },
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are a Cyber Threat Intelligence (CTI) Analyst. Analyze the target threat actor behavior to produce a formal MITRE ATT&CK mapping report.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Threat Actor**: {{aptGroup}}
+- **Custom observed actions**: {{observedTtp}}
+- **Output Format**: {{outputFormat}}
+
+### Report segments
+1. **Threat Profile**: Compile known alias records, origin, targets, and goals of {{aptGroup}}.
+2. **MITRE ATT&CK mapping**: Map TTPs to specific MITRE tactics (Initial Access, Execution, Persistence, Evasion, etc.) and write the exact technique IDs (e.g., T1078, T1059).
+3. **Detection strategies**: Provide detection logic rules for the mapped techniques.
+4. **Mitigation Controls**: Suggest structural mitigations (e.g., MFA policies, network segmentation) to disrupt this actor's killchain.
+
+Provide CTI analysis report in format: {{outputFormat}}.`
+  },
+
+  // 17. BUG BOUNTY (SUBDOMAIN RECON)
+  {
+    id: 'recon-subdomains',
+    title: 'Bug Bounty Recon & Subdomain Takeover',
+    description: 'Establish a systematic subdomain discovery and reconnaissance methodology to detect orphaned DNS records and subdomain takeover vulnerabilities.',
+    category: 'engineering',
+    subcategory: 'Bug Bounty Recon',
+    difficulty: 'Intermediate',
+    tags: ['Recon', 'Subdomain Takeover', 'DNS', 'Amass', 'Subfinder'],
+    fields: [
+      COMMON_FIELDS.objective,
+      COMMON_FIELDS.scope,
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are an expert Bug Bounty Hunter. Build a comprehensive reconnaissance workflow targeting subdomain discovery, passive DNS mapping, and takeover scanning.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Target Domains Scope**: {{scope}}
+- **Tools**: {{requiredTools}}
+- **Output Format**: {{outputFormat}}
+
+### Recon Playbook
+1. **Passive subdomain Discovery**: Write commands using {{requiredTools}} (e.g., subfinder, amass) to extract subdomains.
+2. **Active Resolution & DNS Audits**: Write command sequences using tools (e.g., dnsx, massdns) to check CNAME records and locate dangling aliases.
+3. **Subdomain Takeover validation**: Provide steps to verify takeover risks on orphaned endpoints (e.g., AWS S3, GitHub Pages, Heroku, Zendesk redirects).
+4. **Jira Bug Report Template**: Provide a report structure to submit findings to security teams.
+
+Format output as {{outputFormat}}.`
+  },
+
+  // 18. OSINT (TARGET PROFILING)
+  {
+    id: 'osint-social',
+    title: 'OSINT Target Profiling & Social Mapping',
+    description: 'Develop a framework to collect open-source intelligence (OSINT) data on target organizations, including exposed domains, employee profiles, and metadata leakage.',
+    category: 'engineering',
+    subcategory: 'OSINT',
+    difficulty: 'Intermediate',
+    tags: ['OSINT', 'Recon', 'MetaData', 'Target Profile'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'targetOrg',
+        label: 'Target Organization Domain',
+        type: 'text',
+        placeholder: 'example.com',
+        required: true,
+        helpText: 'The target domain name.'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are an OSINT Specialist and Penetration Tester. Build a systematic workflow to gather public data on the target organization without directly interacting with their servers.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Target Domain**: {{targetOrg}}
+- **Tools Permitted**: {{requiredTools}}
+- **Output Format**: {{outputFormat}}
+
+### OSINT Strategy
+1. **Domain & DNS Recon**: Outline passive information gathering steps (WHOIS, DNS records, MX/TXT configurations, Shodan queries).
+2. **Human Intelligence (HUMINT) profiling**: Outline search operators to discover employee lists, emails, and roles (e.g., via LinkedIn harvester scripts).
+3. **Document Metadata leaks**: Provide commands using {{requiredTools}} (e.g., FOCA, metagoofil) to extract metadata (usernames, internal IPs, software paths) from public documents.
+4. **Threat Vector Mapping**: Identify high-potential entry points (e.g., compromised credentials list checks, exposed VPN portals).
+
+Deliver profiling guide in {{outputFormat}}.`
+  },
+
+  // 19. EXPLOIT DEVELOPMENT (BUFFER OVERFLOW)
+  {
+    id: 'exploit-bof',
+    title: 'Buffer Overflow Exploit Dev Outline',
+    description: 'Structure an exploit development outline targeting stack-based buffer overflows on x86/x64 applications.',
+    category: 'engineering',
+    subcategory: 'Exploit Development',
+    difficulty: 'Expert',
+    tags: ['Exploit Dev', 'Buffer Overflow', 'x86', 'ASLR', 'DEP'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'vulnerableApp',
+        label: 'Vulnerable Binary Characteristics',
+        type: 'text',
+        placeholder: 'Windows x86, vuln server, ASLR: disabled, DEP: disabled...',
+        required: true,
+        helpText: 'Input operating system and security mitigations of binary.'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are an Exploit Developer and Security Researcher. Formulate a structured exploit development outline to hijack application control flow via stack-based buffer overflow.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Binary Targets**: {{vulnerableApp}}
+- **Debugger tools**: {{requiredTools}}
+- **Output Style**: {{outputFormat}}
+
+### Exploit Development Outline
+1. **Fuzzing & Crash Discovery**: Write a Python fuzzing script template to crash the service and determine approximate overwrite boundaries.
+2. **Offset determination**: Provide commands using {{requiredTools}} (e.g., Mona in Immunity Debugger/WinDbg) to find exact EIP/RIP offset distance.
+3. **Bad Character Identification**: Detail steps to locate byte characters (like \\x00) that corrupt payload parsing.
+4. **Pointer Redirection**: Write commands to locate JMP ESP/CALL ESP instruction pointers ignoring memory mitigations.
+5. **Exploit POC Script**: Provide a working Python skeleton exploit script wrapping payload buffers.
+
+Format report in {{outputFormat}}.`
+  },
+
+  // 20. PURPLE TEAM EXERCISES (ADVERSARY EMULATION)
+  {
+    id: 'purple-emulation',
+    title: 'Purple Team Adversary Emulation Script',
+    description: 'Design a joint adversary emulation script and blue team detection verify plan targeting specific MITRE ATT&CK techniques.',
+    category: 'strategy',
+    subcategory: 'Purple Team Exercises',
+    difficulty: 'Advanced',
+    tags: ['Purple Team', 'Emulation', 'Detection Audit', 'Mitre'],
+    fields: [
+      COMMON_FIELDS.objective,
+      {
+        id: 'attackTechnique',
+        label: 'Emulated Attack Technique',
+        type: 'text',
+        placeholder: 'LSASS memory dump (T1003.001)',
+        required: true,
+        helpText: 'Select technique target.'
+      },
+      COMMON_FIELDS.requiredTools,
+      COMMON_FIELDS.outputFormat
+    ],
+    template: `### System Instruction
+You are a Purple Team Consultant and Adversary Emulation lead. Create a unified Purple Team exercise plan coordinating red emulation and blue detection workflows.
+
+### Context & Parameters
+- **Objective**: {{objective}}
+- **Emulated Attack Technique**: {{attackTechnique}}
+- **Tools**: {{requiredTools}}
+- **Output Style**: {{outputFormat}}
+
+### Exercise Framework
+1. **Red Team Emulation Execution**: Describe step-by-step commands to run using {{requiredTools}} (e.g., Mimikatz, PowerShell, rundll32) to emulate the attack ({{attackTechnique}}).
+2. **Blue Team telemetry Validation**: List specific logs (Sysmon Event ID 10, LSASS Access) and telemetry fields to verify in the SIEM database.
+3. **Detection Rule Verification**: Provide sample detection queries (e.g., Splunk SPL, KQL, Elastic) to alert on this command string.
+4. **Hardening Recommendations**: Provide security architecture controls (e.g., PPL protection, credential guard) to block execution.
+
+Deliver Purple Team exercise plan in {{outputFormat}}.`
   }
 ];

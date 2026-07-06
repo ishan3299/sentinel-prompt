@@ -16,6 +16,7 @@ let searchQuery = '';
 let activeCategory = '';
 let activeDifficulty = '';
 let activeSidebarTab: 'all' | 'favs' | 'recents' = 'all';
+let targetModel = 'general';
 
 // ==========================================
 // 2. DOM CACHE
@@ -26,6 +27,7 @@ const DOM = {
   kbToggle: document.getElementById('kb-toggle') as HTMLButtonElement,
   kbDrawer: document.getElementById('kb-drawer') as HTMLDivElement,
   kbClose: document.getElementById('kb-close') as HTMLButtonElement,
+  modelOptSelect: document.getElementById('model-opt-select') as HTMLSelectElement,
   
   // Sidebar (Panel 1)
   searchInput: document.getElementById('search-input') as HTMLInputElement,
@@ -279,8 +281,25 @@ function renderForm() {
 
 // Compiles prompt, evaluates heuristics, parses HTML preview
 function renderPreview() {
-  const compiled = compilePrompt(currentTemplate.template, formValues);
+  let compiled = compilePrompt(currentTemplate.template, formValues);
   
+  // Apply model-specific optimizations
+  if (targetModel === 'claude') {
+    compiled = compiled + `
+
+### Formatting Directive
+Optimize the output specifically for Claude. Frame the analysis inputs using explicit XML tagging structure (<context>, <scope>, <constraints>, <technology>, and <tools>) to ensure strict delimiter parsing and prevent prompt leakage.`;
+  } else if (targetModel === 'reasoning') {
+    compiled = `[Reasoning Model Instructions: Think exhaustively and step-by-step before answering. Do not rush to a response. Extensively analyze edge-case attack surfaces, verify proof-of-concept steps, and review rules of engagement before producing your output.]
+
+` + compiled;
+  } else if (targetModel === 'agent') {
+    compiled = compiled + `
+
+### Execution Directive
+This prompt is designed for agentic executions. The output MUST be strictly valid JSON conforming to the requested schema guidelines. Do not output any chat preambles, greetings, or conversational postscripts. Return ONLY raw JSON data.`;
+  }
+
   // 1. Update text pane
   DOM.rawOutput.value = compiled;
   
@@ -374,7 +393,17 @@ function updateApp() {
 function actionCopyPrompt() {
   const text = DOM.rawOutput.value;
   navigator.clipboard.writeText(text)
-    .then(() => showToast('Prompt copied to clipboard!'))
+    .then(() => {
+      showToast('Prompt copied to clipboard!');
+      const btnSpan = DOM.btnCopy.querySelector('span');
+      const originalText = btnSpan ? btnSpan.textContent : 'Copy Prompt';
+      DOM.btnCopy.classList.add('copied');
+      if (btnSpan) btnSpan.textContent = 'Copied!';
+      setTimeout(() => {
+        DOM.btnCopy.classList.remove('copied');
+        if (btnSpan) btnSpan.textContent = originalText;
+      }, 2000);
+    })
     .catch(() => showToast('Failed to copy. Copy manually.', 'warning'));
 }
 
@@ -499,6 +528,12 @@ function setupEventListeners() {
     const isDark = document.documentElement.classList.toggle('dark');
     document.documentElement.classList.toggle('light', !isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+
+  // Model Selector
+  DOM.modelOptSelect.addEventListener('change', (e) => {
+    targetModel = (e.target as HTMLSelectElement).value;
+    renderPreview();
   });
 
   // Guide / Knowledge Base Drawer Toggle
@@ -661,6 +696,18 @@ function setupEventListeners() {
   DOM.mobileBtnSidebar.addEventListener('click', () => switchMobilePanel('sidebar'));
   DOM.mobileBtnForm.addEventListener('click', () => switchMobilePanel('form'));
   DOM.mobileBtnPreview.addEventListener('click', () => switchMobilePanel('preview'));
+
+  // mouse-move coordinates for card glow hover effects
+  DOM.templatesContainer.addEventListener('mousemove', (e) => {
+    const card = (e.target as HTMLElement).closest('.template-card') as HTMLButtonElement;
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  });
 }
 
 // ==========================================
